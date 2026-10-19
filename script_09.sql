@@ -163,3 +163,16 @@ SELECT
 	FIRST_VALUE(Sales) OVER(ORDER BY Sales) AS sales,
 	LAST_VALUE(Sales) OVER(ORDER BY Sales ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS lst_sls
 FROM Sales.Orders;
+
+--Find the lowest and highest sales for each product
+--Find the difference in sales between current and lowest salse
+
+SELECT 
+	OrderID,
+	OrderDate,
+	Sales,
+	ProductID,
+	FIRST_VALUE(Sales) OVER(PARTITION BY ProductID ORDER BY sales) AS lwst_sls_prd,
+	LAST_VALUE(Sales) OVER(PARTITION BY ProductID ORDER BY sales ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS hst_sls_prd,
+	Sales - FIRST_VALUE(Sales) OVER(PARTITION BY ProductID ORDER BY sales) AS sls_diff
+FROM Sales.Orders
