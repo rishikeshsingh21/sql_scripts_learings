@@ -56,3 +56,46 @@ ON c.CustomerID = cts3.CustomerID
 LEFT JOIN CTE_Cust_Segment cts4
 ON c.CustomerID = cts4.CustomerID
 ORDER BY c.CustomerID
+
+-- Generate a sequence of Numbers from 1 to 20 
+
+WITH CTE_Gen_Num AS (
+	SELECT 1 AS num
+	UNION ALL
+	SELECT num + 1
+	FROM CTE_Gen_Num
+	WHERE num < 100
+)
+
+SELECT *
+FROM CTE_Gen_Num
+OPTION (MAXRECURSION 100)
+
+--Show the employee hierarchy by displaying each employee's level within the organization.
+
+WITH CTE_Manager_hierarchy AS (
+	SELECT 
+		EmployeeID,
+		FirstName,
+		LastName,
+		Department,
+		BirthDate,
+		Gender,
+		Salary,
+		ManagerID  AS mgr_id,
+		1 AS level
+	FROM Sales.Employees
+	WHERE ManagerID IS NULL
+
+	UNION ALL
+
+	SELECT 
+		e.*,
+		level + 1
+	FROM Sales.Employees e
+	INNER JOIN CTE_Manager_hierarchy ceh
+	ON e.ManagerID = ceh.EmployeeID
+)
+
+SELECT *
+FROM CTE_Manager_hierarchy
