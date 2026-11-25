@@ -56,6 +56,7 @@ GO
 
 CREATE VIEW gold.fact_sales AS 
 SELECT 
+	ROW_NUMBER() OVER(ORDER BY sls_order_dt ASC) AS order_id,
 	sls_ord_num AS order_number,
 	dp.product_key,
 	dc.customer_key,
@@ -82,5 +83,3 @@ ON fs.customer_key = dc.customer_key
 LEFT JOIN gold.dim_product dp
 ON fs.product_key = dp.product_key
 
-select *
-from gold.fact_sales
